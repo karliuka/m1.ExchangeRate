@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Faonni
+ *  
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade module to newer
+ * versions in the future.
+ * 
+ * @package     Faonni_ExchangeRate
+ * @copyright   Copyright (c) 2015 Karliuka Vitalii(karliuka.vitalii@gmail.com) 
+ * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*/
+-->
+<config>
+    <modules>
+        <Faonni_ExchangeRate>
+            <version>1.2.0</version>
+        </Faonni_ExchangeRate>
+    </modules>
+    <global>
+        <helpers>
+            <faonni_exchangerate>
+                <class>Faonni_ExchangeRate_Helper</class>
+            </faonni_exchangerate>
+        </helpers>		
+        <models>
+            <faonni_exchangerate>
+                <class>Faonni_ExchangeRate_Model</class>
+            </faonni_exchangerate>
+        </models>
+        <currency>
+            <import>
+                <services>
+                    <yahoo>
+                        <name>Yahoo Finance</name>
+                        <model>faonni_exchangerate/currency_import_yahoo</model>
+                    </yahoo>
+                    <openexchangerate>
+                        <name>Open Exchange Rates</name>
+                        <model>faonni_exchangerate/currency_import_openexchangerate</model>
+                    </openexchangerate>					
+                </services>
+            </import>
+        </currency>
+		<events>
+            <controller_action_predispatch_adminhtml_system_currency_fetchRates>
+				<observers>
+					<faonni_exchangerate_predispatch>
+						<class>faonni_exchangerate/observer</class>
+						<method>preDispatch</method>
+					</faonni_exchangerate_predispatch>					
+				</observers>
+            </controller_action_predispatch_adminhtml_system_currency_fetchRates>
+            <adminhtml_block_html_before>
+                <observers>
+                    <faonni_exchangerate_block_html_before>
+                        <class>faonni_exchangerate/observer</class>
+                        <method>toHtml</method>
+                    </faonni_exchangerate_block_html_before>
+                </observers>
+            </adminhtml_block_html_before>					
+        </events>		
+    </global>
+    <default>
+        <currency>
+            <yahoo>
+                <timeout>100</timeout>
+            </yahoo>
+            <openexchangerate>
+				<api_key backend_model="adminhtml/system_config_backend_encrypted"/>
+                <timeout>100</timeout>
+            </openexchangerate>					
+        </currency>		
+    </default>		
+</config>
